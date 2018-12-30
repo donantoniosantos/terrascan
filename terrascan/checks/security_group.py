@@ -27,7 +27,7 @@ class TestSecurityGroups(unittest.TestCase):
                          'google_compute_firewall',
                         ).property(
                                    'destination_ranges',
-                                  ).list_should_not_contain(['0.0.0.0/0','172.0.0.0/8'])
+                                  ).list_should_not_contain(['0.0.0.0/0','172.0.0.0/8','10.0.0.0/8'])
 
     def test_aws_db_security_group_used(self):
         # This SG type exists outside of VPC (e.g. ec2 classic)
@@ -45,17 +45,17 @@ class TestSecurityGroups(unittest.TestCase):
             'aws_elasticache_security_group').resource_list, [])
 
     def test_aws_security_group_rule_open(self):
-        # Assert that ingress rule is open to 0.0.0.0/0 or 172.0.0.0/8
+        # Assert that ingress rule is open to 0.0.0.0/0, 172.0.0.0/8, or 10.0.0.0/8
         self.v.enable_variable_expansion()
         self.v.resources(
             'aws_security_group_rule').with_property(
             'type', 'ingress').property(
-            'cidr_blocks').list_should_not_contain(['0.0.0.0/0','172.0.0.0/8'])
+            'cidr_blocks').list_should_not_contain(['0.0.0.0/0','172.0.0.0/8','10.0.0.0/8'])
 
     def test_aws_security_group_inline_rule_open(self):
-        # Assert that SG has ingress rule open to 0.0.0.0/0 or 172.0.0.0/8
+        # Assert that SG has ingress rule open to 0.0.0.0/0, 172.0.0.0/8, or 10.0.0.0/8
         self.v.enable_variable_expansion()
         self.v.resources(
             'aws_security_group').property(
             'ingress').property(
-            'cidr_blocks').list_should_not_contain(['0.0.0.0/0','172.0.0.0/8'])
+            'cidr_blocks').list_should_not_contain(['0.0.0.0/0','172.0.0.0/8','10.0.0.0/8'])
